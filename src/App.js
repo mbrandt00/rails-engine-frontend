@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import api from './api/merchants';
+import {Route, Routes, useNavigate} from 'react-router-dom';
+import Layout from './components/Layout';
+import List from './components/List';
+import { useEffect, useState } from 'react';
+
 
 function App() {
+
+  const [merchants, setMerchants] = useState([]);
+  useEffect( () => {
+    const fetchMerchants = async () => {
+      try {
+        const response = await api.get('/merchants') 
+        setMerchants(response.data.data)
+      } catch (error) {
+        console.log(error)
+      }
+    };
+    fetchMerchants();
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes> 
+      <Route path = "/" element = {<List merchants = {merchants}/>} >
+      </Route>
+       
+    </Routes>
   );
 }
 
