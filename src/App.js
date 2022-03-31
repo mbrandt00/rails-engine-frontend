@@ -11,7 +11,7 @@ function App() {
   useEffect( () => {
     const fetchMerchants = async () => {
       try {
-        const response = await api.get('/merchants') 
+        const response = await api.get('/merchants/') 
         setMerchants(response.data.data)
       } catch (error) {
         console.log(error)
