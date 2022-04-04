@@ -1,11 +1,16 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-const ListItem = ({name, key}) => {
+const ListItem = ({id, item}) => {
   return (
-      <div>
-    <h3>{name}</h3>
-    <p>{key}</p>
-    </div>
+    <div>
+    <li key = {id}> 
+        <h4>{item.name}</h4>
+            <Link to={`/items/${id}`} >Show Page</Link>
+        <p>Description: {item.description}</p>
+        <p>Unit Price: {item.unit_price}</p>
+     </li>
+     </div>
   )
 }
 

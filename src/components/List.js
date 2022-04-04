@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import api from '../api/merchants'
+import api from '../api/LocalHost'
 const List = ({data, type}) => {
   const isMerchant = (type === 'merchants')
   const [searchTerm, setSearchTerm] = useState("")
   const [searchMinValue, setMinValue] = useState("")
   const [searchMaxValue, setMaxValue] = useState("")
   const handleChange = (e) => {
+    setParams({name: e.target.value})
     setSearchTerm(e.target.value);
   }
   const handleMaxChange = (e) => {
@@ -21,29 +22,19 @@ const List = ({data, type}) => {
       if (searchMinValue.length > 0 && searchMaxValue.length > 0 ) {
         setParams({min_price: searchMinValue, max_price: searchMaxValue});
       } else if  (searchMaxValue.length > 0 ) {
-          setParams({max_price: searchMaxValue});   
+        setParams({max_price: searchMaxValue});   
       } else if (searchMinValue.length > 0) {
         setParams({min_pirce: searchMinValue})
       } 
     } else if (searchTerm.length > 0 && searchMinValue.length === 0 && searchMaxValue.length === 0) {
+      debugger;
       setParams({name: searchTerm})
     } else { 
-      debugger;
       setParams({})
     }
   }, [searchTerm, searchMinValue, searchMaxValue]);
   const [searchResults, setSearchResults] = useState([])
-  useEffect( () => {
-    const fetchSearchMerchants = async () => {
-      try {
-        const response = await api.get(`/${type}/find_all`, {params} )
-        setSearchResults(response.data.data)
-      }catch(error) {
-        
-      }
-    };
-    fetchSearchMerchants();
-  }, [searchTerm, searchMaxValue, searchMinValue])
+  
   
   return (
     <div>
