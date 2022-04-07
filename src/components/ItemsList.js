@@ -1,5 +1,5 @@
 import React from 'react'
-import api from '../api/LocalHost'
+import axiosConn from '../api/AxiosConn'
 import { useEffect, useState } from 'react';
 import {Outlet } from 'react-router-dom'
 import ListItem from './ListItem';
@@ -14,25 +14,21 @@ const ItemsList = () => {
     const [maxSearch, setMaxSearch]= useState('')
     const [itemAddShow, setItemAddShow]= useState(false)
     const handleSubmit = (e) => {
-      setParams({})
       e.preventDefault()
-      if (e.target[0].value.length > 0) {
-        setParams({...params, 
-          name: e.target[0].value
+      if (nameSearch.length > 0) {
+        setParams({
+          name: nameSearch
         })
-      } else if (e.target[1].value.length > 0 && e.target[2].value.length === 0 ) {
-        debugger;
-        setParams({...params, min_price: e.target[1].value})
-        debugger;
-      } else if (e.target[1].value.length > 0 && e.target[2].value.length > 1) {
-        setParams({min_price: e.target[1].value, max_price: e.target[2].value})
+      } else if (minSearch.length>0 && maxSearch.length===0 ) {
+        setParams({min_price: minSearch})
+      } else if (minSearch.length>0 && maxSearch.length>0) {
+        setParams({min_price: minSearch, max_price: maxSearch})
       }
     }
-    
       useEffect( () => {
         const fetchItems = async () => {
           try {
-            const response = await api.get('/items/find_all', {params}) 
+            const response = await axiosConn.get('/api/v1/items/find_all', {params}) 
             setItems(response.data.data)
           } catch (error) {
             console.log(error)
@@ -48,22 +44,36 @@ const ItemsList = () => {
           type = "form-control"
           placeholder = {"Enter a name to search"}
           value = {nameSearch} 
-          disabled = {minSearch.length > 0 || maxSearch.length > 0}
-          onChange = {(e) => setNameSearch(e.target.value)}
+          // disabled = {minSearch.length > 0 || maxSearch.length > 0}
+          onChange = {(e) => {
+            setNameSearch(e.target.value)
+            // name searches and min/max value searches are mutually exclusively, so we clear min and max search values whenever a name search is made
+            setMinSearch('')
+            setMaxSearch('')
+            }
+          }
         />
         <input className=''
           type = "number"
           placeholder = {`Enter a min price to search`}
           value = {minSearch}
-          disabled = {nameSearch.length > 0 ? true : false}
-          onChange = {(e) => setMinSearch(e.target.value)}
+          // disabled = {nameSearch.length > 0 ? true : false}
+          onChange = {(e) => {
+              setMinSearch(e.target.value)
+              setNameSearch('')
+            }
+          }
         />
         <input className=''
           type = "number"
           placeholder = {`Enter a max price to search`}
           value = {maxSearch}
-          disabled = {nameSearch.length > 0 ? true : false}
-          onChange = {(e) => setMaxSearch(e.target.value)}
+          // disabled = {nameSearch.length > 0 ? true : false}
+          onChange = {(e) => {
+            setMaxSearch(e.target.value)
+            setNameSearch('')
+            }
+          }
         />
         <button type = 'submit'> Submit </button>
       </form>

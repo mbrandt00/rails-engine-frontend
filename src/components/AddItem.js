@@ -1,24 +1,25 @@
 import { Modal, Button, Row, Col, Form } from 'react-bootstrap'
 import Select from 'react-select'
 import React from 'react'
-import LocalHost from '../api/LocalHost'
+import axiosConn from '../api/AxiosConn'
 import { useEffect, useState } from 'react';
 const AddItem = ({show, onHide}) => {
     const [merchants, setMerchants] = useState([]);
-    console.log(merchants)
     const handleSubmit = (e) => {
         e.preventDefault();
-        LocalHost.post('/items', {
+        axiosConn.post('/api/v1/items', {
             name: e.target.ItemName.value,
             description: e.target.Description.value,
             unit_price: e.target.UnitPrice.value,
             merchant_id: e.target.MerchantId.value
         })
+        onHide();
+        window.location.reload(false)
     }
     useEffect( () => {
         const fetchMerchants = async () => {
           try {
-            const response = await LocalHost.get('/merchants') 
+            const response = await axiosConn.get('/api/v1/merchants') 
             setMerchants(response.data.data)
           } catch (error) {
             console.log(error)

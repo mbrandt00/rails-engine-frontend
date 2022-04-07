@@ -1,15 +1,19 @@
 import React from 'react'
-import LocalHost from '../api/LocalHost'
+import axiosConn from '../api/AxiosConn'
 import { Modal, Button, Row, Col, Form } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 const EditItem = ({show, onHide, item}) => {
+  let navigate = useNavigate()
     const handleSubmit = (e) => {
-        debugger
         e.preventDefault();
-        LocalHost.patch(`/items/${item.id}`, {
+        axiosConn.patch(`api/v1/items/${item.id}`, {
             name: e.target.ItemName.value,
             description: e.target.Description.value,
             unit_price: e.target.UnitPrice.value
         })
+        onHide();
+        window.location.reload(false)
+        
     }
   return (
     <div>
@@ -29,7 +33,7 @@ const EditItem = ({show, onHide, item}) => {
                             type = "text"
                             name = "ItemName"
                             required 
-                            // defaultValue = {item.attributes.name}
+                            defaultValue = {item.attributes.name}
 
                         />
                     </Form.Group>

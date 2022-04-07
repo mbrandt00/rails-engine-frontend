@@ -1,35 +1,35 @@
 import React, { useEffect } from 'react'
-import LocalHost from '../api/LocalHost'
+import axiosConn from '../api/AxiosConn'
 import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 import {Button, ButtonToolbar} from 'react-bootstrap'
-
 import EditItem from './EditItem'
 const ItemDetails = () => {
   let {itemId} = useParams();
-    const [item, setItem] = useState([]);
+    const [item, setItem] = useState({});
       useEffect( () => {
         const fetchItems = async () => {
           try {
-            const response = await LocalHost.get(`/items/${itemId}`) 
+            const response = await axiosConn.get(`api/v1/items/${itemId}`) 
             setItem(response.data.data)
           } catch (error) {
-            // console.log(error)
+            console.log(error)
           }
         };
         fetchItems();
-      }, [itemId])
+      }, [])
 
     let editItemClose = () => setItemEditShow(false)
   const [itemEditShow, setItemEditShow]= useState(false)
   return (
-    <div>
+  <div>
         <h1>Item #{itemId}</h1>
-        <p>{JSON.stringify(item)}</p>
+        {item.attributes ? 
+        <div>
         <p> Item name: {item.attributes.name}</p>
         <p> Item name: {item.attributes.unit_price}</p>
         <p> Item name: {item.attributes.description}</p>
-<ButtonToolbar>
+      <ButtonToolbar>
         <Button
           variant = 'primary' 
           onClick = {() => setItemEditShow(true)}
@@ -38,8 +38,8 @@ const ItemDetails = () => {
         </Button>
         < EditItem item = {item} show={itemEditShow}
         onHide={editItemClose}/>
-
       </ButtonToolbar>
+      </div> : 'loading'}
     </div>
   )
 }
