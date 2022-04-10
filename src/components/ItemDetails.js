@@ -4,13 +4,15 @@ import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 import {Button, ButtonToolbar} from 'react-bootstrap'
 import EditItem from './EditItem'
-const ItemDetails = () => {
+const ItemDetails = ({user}) => {
+  // console.log(user)
   let {itemId} = useParams();
     const [item, setItem] = useState({});
+    const [quantity, setQuantity] = useState()
       useEffect( () => {
         const fetchItems = async () => {
           try {
-            const response = await axiosConn.get(`api/v1/items/${itemId}`) 
+            const response = await axiosConn.get(`/items/${itemId}`, {withCredentials: true}) 
             setItem(response.data.data)
           } catch (error) {
             console.log(error)
@@ -18,7 +20,12 @@ const ItemDetails = () => {
         };
         fetchItems();
       }, [])
-
+    const handleSubmit = () => {
+      axiosConn.post("/invoices", {
+        item: itemId, 
+        quantity: quantity
+      }, {withCredentials: true})
+    }
     let editItemClose = () => setItemEditShow(false)
   const [itemEditShow, setItemEditShow]= useState(false)
   return (
@@ -29,6 +36,20 @@ const ItemDetails = () => {
         <p> Item name: {item.attributes.name}</p>
         <p> Item name: {item.attributes.unit_price}</p>
         <p> Item name: {item.attributes.description}</p>
+        {/* this should go in merchant auth item page */}
+        <form onSubmit = {handleSubmit}>
+          <input 
+            type = "number" 
+            name = "quantity"
+            placeholder = {`Quantity`}
+            value = {quantity} 
+            onChange = {(e) => setQuantity(e.target.value)}
+            required 
+          />
+          <button type = "submit">
+            Add to Invoice
+          </button>
+        </form>
       <ButtonToolbar>
         <Button
           variant = 'primary' 
@@ -39,7 +60,7 @@ const ItemDetails = () => {
         < EditItem item = {item} show={itemEditShow}
         onHide={editItemClose}/>
       </ButtonToolbar>
-      </div> : 'loading'}
+      </div> : 'Only customer accounts have access to this page!'}
     </div>
   )
 }

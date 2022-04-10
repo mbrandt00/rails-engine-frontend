@@ -1,18 +1,22 @@
 import React from 'react'
-import axios from 'axios'
+import axiosConn from '../../api/AxiosConn'
 import { useState } from 'react'
+import Select from 'react-select';
 const Registration = ({handleSuccessfulAuth}) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
     const [registrationErrors, setRegistrationErrors] = useState('')
+    const [typeOfUser, setTypeOfUser] = useState('')
 
     const handleSubmit = (e) => {
+        debugger;
         e.preventDefault();
-        axios.post('http://localhost:3000/registrations', {
+        axiosConn.post('/registrations', {
             email: email,
             password: password,
             password_confirmation: passwordConfirmation,
+            type_of_user: typeOfUser
         }, 
         {withCredentials: true}
         )
@@ -23,6 +27,7 @@ const Registration = ({handleSuccessfulAuth}) => {
             }).catch(error => {
                 console.log("registration error", error)}
     )}
+
 
   return (
     <div>
@@ -52,8 +57,18 @@ const Registration = ({handleSuccessfulAuth}) => {
                 value = {passwordConfirmation}
                 required 
             />
-            <button type = "submit">Register</button>
-            
+            <div className="select-container">
+                <select onChange={(e) => setTypeOfUser(e.target.value)}>
+                    <option value=''></option>
+                    <option value="Customer">Customer</option>
+                    <option value="Merchant">Merchant</option>
+                </select>
+            </div>
+            <button 
+                type = "submit" 
+                disabled={typeOfUser === '' ? true : false }>
+                    Register
+            </button>
         </form>
     </div>
   )

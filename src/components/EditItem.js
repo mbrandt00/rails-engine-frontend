@@ -6,11 +6,11 @@ const EditItem = ({show, onHide, item}) => {
   let navigate = useNavigate()
     const handleSubmit = (e) => {
         e.preventDefault();
-        axiosConn.patch(`api/v1/items/${item.id}`, {
+        axiosConn.patch(`/items/${item.id}`, {
             name: e.target.ItemName.value,
             description: e.target.Description.value,
             unit_price: e.target.UnitPrice.value
-        })
+        }, {withCredentials: true})
         onHide();
         window.location.reload(false)
         

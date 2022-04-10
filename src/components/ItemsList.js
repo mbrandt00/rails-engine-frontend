@@ -6,7 +6,7 @@ import ListItem from './ListItem';
 import {Button, ButtonToolbar} from 'react-bootstrap'
 import AddItem from './AddItem'
 
-const ItemsList = () => {
+const ItemsList = ({user}) => {
     const [params, setParams] = useState({})
     const [items, setItems] = useState([]);
     const [nameSearch, setNameSearch]= useState('')
@@ -28,7 +28,7 @@ const ItemsList = () => {
       useEffect( () => {
         const fetchItems = async () => {
           try {
-            const response = await axiosConn.get('/api/v1/items/find_all', {params}) 
+            const response = await axiosConn.get('/items/find_all', {params}, { withCredentials: true })  
             setItems(response.data.data)
           } catch (error) {
             console.log(error)
@@ -39,6 +39,8 @@ const ItemsList = () => {
       let addItemClose = () => setItemAddShow(false)
     return (
       <div>
+        {user.type_of_user ? 
+        <>
       <form onSubmit = {handleSubmit} >
         <input className=''
           type = "form-control"
@@ -92,6 +94,11 @@ const ItemsList = () => {
       <ul>
         {items.map((item) => <ListItem id = {item.id} item = {item.attributes} /> )}
         </ul>
+        </>
+        : 'You must login first!'
+        
+        
+        }
       
     </div>
 

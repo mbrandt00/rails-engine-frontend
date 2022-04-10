@@ -7,19 +7,19 @@ const AddItem = ({show, onHide}) => {
     const [merchants, setMerchants] = useState([]);
     const handleSubmit = (e) => {
         e.preventDefault();
-        axiosConn.post('/api/v1/items', {
+        axiosConn.post('/items', {
             name: e.target.ItemName.value,
             description: e.target.Description.value,
             unit_price: e.target.UnitPrice.value,
-            merchant_id: e.target.MerchantId.value
-        })
+            merchant_id: e.target.MerchantId.value, 
+        }, {withCredentials: true})
         onHide();
         window.location.reload(false)
     }
     useEffect( () => {
         const fetchMerchants = async () => {
           try {
-            const response = await axiosConn.get('/api/v1/merchants') 
+            const response = await axiosConn.get('/merchants', {withCredentials: true}) 
             setMerchants(response.data.data)
           } catch (error) {
             console.log(error)

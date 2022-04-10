@@ -7,7 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container'
 import Dashboard from './components/Dashboard';
 import {useEffect, useState} from 'react'
-import axios from 'axios';
+import axiosConn from './api/AxiosConn';
+import InvoiceDetails from './components/InvoiceDetails';
 
 
 function App() {
@@ -17,10 +18,9 @@ function App() {
     setLoggedIn(true);
     setUser(data.user)
   }
-
   useEffect( () => {
     const checkLoginStatus = () => {
-      axios.get("http://localhost:3000/logged_in", {withCredentials: true})
+      axiosConn.get("/logged_in", {withCredentials: true})
       .then(response => {
         if (response.data.logged_in && loggedIn=== false){
         setLoggedIn(true)
@@ -35,17 +35,17 @@ function App() {
     }
     checkLoginStatus();
   }, [])
-  
   return (
     <Container>
     <Routes> 
       <Route path = "/" element = {<Layout/>} >
         {/* <Route path = "/merchants" element = {<List data = {merchants} type = "merchants"/>} /> */}
-        <Route path = "/items" element = {<ItemsList />} />
-        <Route path = "items/:itemId" element = {<ItemDetails />}/>
+        <Route path = "items" element = {<ItemsList user = {user}/>} />
+        <Route path = "items/:itemId" element = {<ItemDetails user = {user} />}/>
+        <Route path = "home" element = {<Home handleLogin = {handleLogin} user = {user}/>}/> 
+        <Route path = "dashboard" element = {<Dashboard user = {user} />} />
+        <Route path = "/dashboard/:invoiceid" element = {<InvoiceDetails />} />
       </Route>
-      <Route path = "home" element = {<Home handleLogin = {handleLogin} loggedInStatus = {loggedIn}/>}/> 
-      <Route path = "dashboard" element = {<Dashboard loggedInStatus = {loggedIn}/>}/> 
     </Routes>
     </Container>
   );
