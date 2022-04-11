@@ -41,6 +41,7 @@ const EditItem = ({show, onHide, item}) => {
                         <Form.Label> UnitPrice</Form.Label>
                         <Form.Control
                             type = "number"
+                            step="any"
                             name = "UnitPrice"
                             required 
                             defaultValue = {item.attributes.unit_price}

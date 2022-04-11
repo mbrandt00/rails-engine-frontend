@@ -5,7 +5,6 @@ import { useState } from 'react'
 import {Button, ButtonToolbar} from 'react-bootstrap'
 import EditItem from './EditItem'
 const ItemDetails = ({user}) => {
-  // console.log(user)
   let {itemId} = useParams();
     const [item, setItem] = useState({});
     const [quantity, setQuantity] = useState()
